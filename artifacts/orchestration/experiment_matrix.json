@@ -1,0 +1,203 @@
+{
+  "schema_version": 1,
+  "registry": "configs/experiments/experiment_registry.json",
+  "pair_generation": "cartesian_product(datasets, models)",
+  "dataset_count": 5,
+  "model_count": 4,
+  "pair_count": 20,
+  "datasets": [
+    "triviaqa_no_context",
+    "nq_open",
+    "web_questions",
+    "gsm8k_rationale",
+    "cnn_dailymail_3_0_0"
+  ],
+  "models": [
+    "qwen3_8b",
+    "qwen3_32b",
+    "llama3_1_8b_instruct",
+    "mistral_7b_instruct_v0_3"
+  ],
+  "pairs": [
+    {
+      "sequence": 1,
+      "pair_id": "triviaqa_no_context__qwen3_8b",
+      "dataset_id": "triviaqa_no_context",
+      "dataset_display_name": "TriviaQA no-context",
+      "model_id": "qwen3_8b",
+      "model_hf_id": "Qwen/Qwen3-8B",
+      "display_name": "TriviaQA no-context x Qwen/Qwen3-8B"
+    },
+    {
+      "sequence": 2,
+      "pair_id": "triviaqa_no_context__qwen3_32b",
+      "dataset_id": "triviaqa_no_context",
+      "dataset_display_name": "TriviaQA no-context",
+      "model_id": "qwen3_32b",
+      "model_hf_id": "Qwen/Qwen3-32B",
+      "display_name": "TriviaQA no-context x Qwen/Qwen3-32B"
+    },
+    {
+      "sequence": 3,
+      "pair_id": "triviaqa_no_context__llama3_1_8b_instruct",
+      "dataset_id": "triviaqa_no_context",
+      "dataset_display_name": "TriviaQA no-context",
+      "model_id": "llama3_1_8b_instruct",
+      "model_hf_id": "meta-llama/Llama-3.1-8B-Instruct",
+      "display_name": "TriviaQA no-context x meta-llama/Llama-3.1-8B-Instruct"
+    },
+    {
+      "sequence": 4,
+      "pair_id": "triviaqa_no_context__mistral_7b_instruct_v0_3",
+      "dataset_id": "triviaqa_no_context",
+      "dataset_display_name": "TriviaQA no-context",
+      "model_id": "mistral_7b_instruct_v0_3",
+      "model_hf_id": "mistralai/Mistral-7B-Instruct-v0.3",
+      "display_name": "TriviaQA no-context x mistralai/Mistral-7B-Instruct-v0.3"
+    },
+    {
+      "sequence": 5,
+      "pair_id": "nq_open__qwen3_8b",
+      "dataset_id": "nq_open",
+      "dataset_display_name": "NQ-Open",
+      "model_id": "qwen3_8b",
+      "model_hf_id": "Qwen/Qwen3-8B",
+      "display_name": "NQ-Open x Qwen/Qwen3-8B"
+    },
+    {
+      "sequence": 6,
+      "pair_id": "nq_open__qwen3_32b",
+      "dataset_id": "nq_open",
+      "dataset_display_name": "NQ-Open",
+      "model_id": "qwen3_32b",
+      "model_hf_id": "Qwen/Qwen3-32B",
+      "display_name": "NQ-Open x Qwen/Qwen3-32B"
+    },
+    {
+      "sequence": 7,
+      "pair_id": "nq_open__llama3_1_8b_instruct",
+      "dataset_id": "nq_open",
+      "dataset_display_name": "NQ-Open",
+      "model_id": "llama3_1_8b_instruct",
+      "model_hf_id": "meta-llama/Llama-3.1-8B-Instruct",
+      "display_name": "NQ-Open x meta-llama/Llama-3.1-8B-Instruct"
+    },
+    {
+      "sequence": 8,
+      "pair_id": "nq_open__mistral_7b_instruct_v0_3",
+      "dataset_id": "nq_open",
+      "dataset_display_name": "NQ-Open",
+      "model_id": "mistral_7b_instruct_v0_3",
+      "model_hf_id": "mistralai/Mistral-7B-Instruct-v0.3",
+      "display_name": "NQ-Open x mistralai/Mistral-7B-Instruct-v0.3"
+    },
+    {
+      "sequence": 9,
+      "pair_id": "web_questions__qwen3_8b",
+      "dataset_id": "web_questions",
+      "dataset_display_name": "WebQuestions",
+      "model_id": "qwen3_8b",
+      "model_hf_id": "Qwen/Qwen3-8B",
+      "display_name": "WebQuestions x Qwen/Qwen3-8B"
+    },
+    {
+      "sequence": 10,
+      "pair_id": "web_questions__qwen3_32b",
+      "dataset_id": "web_questions",
+      "dataset_display_name": "WebQuestions",
+      "model_id": "qwen3_32b",
+      "model_hf_id": "Qwen/Qwen3-32B",
+      "display_name": "WebQuestions x Qwen/Qwen3-32B"
+    },
+    {
+      "sequence": 11,
+      "pair_id": "web_questions__llama3_1_8b_instruct",
+      "dataset_id": "web_questions",
+      "dataset_display_name": "WebQuestions",
+      "model_id": "llama3_1_8b_instruct",
+      "model_hf_id": "meta-llama/Llama-3.1-8B-Instruct",
+      "display_name": "WebQuestions x meta-llama/Llama-3.1-8B-Instruct"
+    },
+    {
+      "sequence": 12,
+      "pair_id": "web_questions__mistral_7b_instruct_v0_3",
+      "dataset_id": "web_questions",
+      "dataset_display_name": "WebQuestions",
+      "model_id": "mistral_7b_instruct_v0_3",
+      "model_hf_id": "mistralai/Mistral-7B-Instruct-v0.3",
+      "display_name": "WebQuestions x mistralai/Mistral-7B-Instruct-v0.3"
+    },
+    {
+      "sequence": 13,
+      "pair_id": "gsm8k_rationale__qwen3_8b",
+      "dataset_id": "gsm8k_rationale",
+      "dataset_display_name": "GSM8K rationale",
+      "model_id": "qwen3_8b",
+      "model_hf_id": "Qwen/Qwen3-8B",
+      "display_name": "GSM8K rationale x Qwen/Qwen3-8B"
+    },
+    {
+      "sequence": 14,
+      "pair_id": "gsm8k_rationale__qwen3_32b",
+      "dataset_id": "gsm8k_rationale",
+      "dataset_display_name": "GSM8K rationale",
+      "model_id": "qwen3_32b",
+      "model_hf_id": "Qwen/Qwen3-32B",
+      "display_name": "GSM8K rationale x Qwen/Qwen3-32B"
+    },
+    {
+      "sequence": 15,
+      "pair_id": "gsm8k_rationale__llama3_1_8b_instruct",
+      "dataset_id": "gsm8k_rationale",
+      "dataset_display_name": "GSM8K rationale",
+      "model_id": "llama3_1_8b_instruct",
+      "model_hf_id": "meta-llama/Llama-3.1-8B-Instruct",
+      "display_name": "GSM8K rationale x meta-llama/Llama-3.1-8B-Instruct"
+    },
+    {
+      "sequence": 16,
+      "pair_id": "gsm8k_rationale__mistral_7b_instruct_v0_3",
+      "dataset_id": "gsm8k_rationale",
+      "dataset_display_name": "GSM8K rationale",
+      "model_id": "mistral_7b_instruct_v0_3",
+      "model_hf_id": "mistralai/Mistral-7B-Instruct-v0.3",
+      "display_name": "GSM8K rationale x mistralai/Mistral-7B-Instruct-v0.3"
+    },
+    {
+      "sequence": 17,
+      "pair_id": "cnn_dailymail_3_0_0__qwen3_8b",
+      "dataset_id": "cnn_dailymail_3_0_0",
+      "dataset_display_name": "CNN/DailyMail 3.0.0",
+      "model_id": "qwen3_8b",
+      "model_hf_id": "Qwen/Qwen3-8B",
+      "display_name": "CNN/DailyMail 3.0.0 x Qwen/Qwen3-8B"
+    },
+    {
+      "sequence": 18,
+      "pair_id": "cnn_dailymail_3_0_0__qwen3_32b",
+      "dataset_id": "cnn_dailymail_3_0_0",
+      "dataset_display_name": "CNN/DailyMail 3.0.0",
+      "model_id": "qwen3_32b",
+      "model_hf_id": "Qwen/Qwen3-32B",
+      "display_name": "CNN/DailyMail 3.0.0 x Qwen/Qwen3-32B"
+    },
+    {
+      "sequence": 19,
+      "pair_id": "cnn_dailymail_3_0_0__llama3_1_8b_instruct",
+      "dataset_id": "cnn_dailymail_3_0_0",
+      "dataset_display_name": "CNN/DailyMail 3.0.0",
+      "model_id": "llama3_1_8b_instruct",
+      "model_hf_id": "meta-llama/Llama-3.1-8B-Instruct",
+      "display_name": "CNN/DailyMail 3.0.0 x meta-llama/Llama-3.1-8B-Instruct"
+    },
+    {
+      "sequence": 20,
+      "pair_id": "cnn_dailymail_3_0_0__mistral_7b_instruct_v0_3",
+      "dataset_id": "cnn_dailymail_3_0_0",
+      "dataset_display_name": "CNN/DailyMail 3.0.0",
+      "model_id": "mistral_7b_instruct_v0_3",
+      "model_hf_id": "mistralai/Mistral-7B-Instruct-v0.3",
+      "display_name": "CNN/DailyMail 3.0.0 x mistralai/Mistral-7B-Instruct-v0.3"
+    }
+  ]
+}
