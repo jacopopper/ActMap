@@ -1,0 +1,66 @@
+# Local environment and caches
+.venv/
+.python-version
+uv.lock
+__pycache__/
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+.ipynb_checkpoints/
+*.pyc
+
+# Large local datasets and cached features
+data/
+resources/
+checkpoints/
+*.pt
+*.pth
+*.pkl
+*.npy
+*.npz
+*.csv
+*.tsv
+
+# Exploratory experiments and generated artifacts
+tmp/
+*.ipynb
+*.log
+*.out
+*.err
+
+# Generated media and report outputs
+*.png
+*.jpg
+*.jpeg
+*.bmp
+*.aux
+*.bbl
+*.bcf
+*.blg
+*.fdb_latexmk
+*.fls
+*.lof
+*.lot
+*.pdf
+*.run.xml
+*.synctex.gz
+*.toc
+
+# Keep the curated README figure.
+!assets/
+assets/*
+!assets/actmap_first_page.png
+
+# Keep the figures that are inputs to doc/report.tex.
+doc/figures/*
+!doc/figures/final/
+doc/figures/final/*
+!doc/figures/actmap_first_page.png
+!doc/figures/actmap_volume_signature.png
+!doc/figures/channel_ablation.png
+!doc/report.pdf
+!doc/figures/final/indomain_auroc_comparison.pdf
+!doc/figures/final/transfer_auroc_matrices.pdf
+
+src/transfer.py
+src/white_transfer.py

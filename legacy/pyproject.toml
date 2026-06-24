@@ -1,0 +1,13 @@
+[project]
+name = "white-box-uq"
+version = "0.1.0"
+description = "ActMap experiments for white-box uncertainty estimation in language-model QA"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "numpy",
+    "scikit-learn",
+    "torch",
+    "transformers",
+    "vllm",
+]
