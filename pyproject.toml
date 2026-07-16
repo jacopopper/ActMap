@@ -1,11 +1,14 @@
 [project]
-name = "white-box-uq"
+name = "actmap-uq"
 version = "0.1.0"
-description = "ActMap experiments for white-box uncertainty estimation in language-model QA"
+description = "Experiment registry, data split, and label orchestration for ActMap experiments"
 readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
+    "datasets",
     "numpy",
+    "pandas",
+    "pyarrow",
     "scikit-learn",
     "torch",
     "transformers",

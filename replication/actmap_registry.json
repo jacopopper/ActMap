@@ -1,0 +1,197 @@
+{
+  "schema_version": 1,
+  "source_documents": [
+    "README.md"
+  ],
+  "global": {
+    "splits": [
+      "train",
+      "validation",
+      "test"
+    ],
+    "detector_seeds": [
+      42,
+      123,
+      456
+    ],
+    "actmap": {
+      "primary_classifier": "compact_vit2d",
+      "map_shape": [
+        12,
+        32,
+        128
+      ],
+      "normalization": {
+        "mean": 0.0,
+        "standard_deviation": 1.0
+      },
+      "shape": [
+        12,
+        32,
+        128
+      ],
+      "classifier": "vit2d",
+      "max_new_tokens": {
+        "short_answer": 32,
+        "gsm8k_direct": 32,
+        "cnn_dailymail": 384
+      }
+    },
+    "calibration": {
+      "temperature_selection": "best_per_model"
+    },
+    "split_seed": 42
+  },
+  "datasets": [
+    {
+      "id": "triviaqa_no_context",
+      "display_name": "TriviaQA no-context",
+      "task_type": "short_answer_qa",
+      "context": "none",
+      "label_target": "answer_correctness",
+      "split_strategy": "question_disjoint_train_validation_test",
+      "hf_id": "mandarjoshi/trivia_qa",
+      "hf_url": "https://huggingface.co/datasets/mandarjoshi/trivia_qa",
+      "hf_config": "rc.nocontext",
+      "hf_splits": [
+        "train",
+        "validation"
+      ],
+      "source_limit": 50000,
+      "task": "short-answer QA",
+      "label": "normalized exact match or F1 >= 0.8"
+    },
+    {
+      "id": "nq_open",
+      "display_name": "NQ-Open",
+      "task_type": "short_answer_qa",
+      "context": "open_domain",
+      "label_target": "answer_correctness",
+      "split_strategy": "question_disjoint_train_validation_test",
+      "hf_id": "google-research-datasets/nq_open",
+      "hf_url": "https://huggingface.co/datasets/google-research-datasets/nq_open",
+      "hf_config": null,
+      "hf_splits": [
+        "train",
+        "validation"
+      ],
+      "source_limit": 50000,
+      "task": "open-domain short-answer QA",
+      "label": "normalized exact match or F1 >= 0.8"
+    },
+    {
+      "id": "gsm8k_rationale",
+      "display_name": "GSM8K rationale",
+      "task_type": "math_rationale",
+      "context": "word_problem",
+      "label_target": "final_numeric_answer_correctness",
+      "split_strategy": "question_disjoint_train_validation_test",
+      "hf_id": "openai/gsm8k",
+      "hf_url": "https://huggingface.co/datasets/openai/gsm8k",
+      "hf_config": "main",
+      "hf_splits": [
+        "train",
+        "test"
+      ],
+      "source_limit": null,
+      "task": "direct-answer grade-school math",
+      "label": "final numeric answer match"
+    },
+    {
+      "id": "cnn_dailymail_3_0_0",
+      "display_name": "CNN/DailyMail 3.0.0",
+      "task_type": "summarization_factuality",
+      "context": "article",
+      "label_target": "summary_factuality",
+      "split_strategy": "article_disjoint_train_validation_test",
+      "hf_id": "abisee/cnn_dailymail",
+      "hf_url": "https://huggingface.co/datasets/abisee/cnn_dailymail",
+      "hf_config": "3.0.0",
+      "hf_splits": [
+        "train",
+        "validation",
+        "test"
+      ],
+      "source_limit": 50000,
+      "task": "long-form summarization factuality",
+      "label": "summary factual iff every sentence passes MiniCheck at threshold 0.5"
+    }
+  ],
+  "models": [
+    {
+      "id": "qwen3_8b",
+      "display_name": "Qwen3-8B",
+      "hf_id": "Qwen/Qwen3-8B",
+      "family": "qwen3",
+      "size": "8B",
+      "hf_url": "https://huggingface.co/Qwen/Qwen3-8B",
+      "role": "primary small model"
+    },
+    {
+      "id": "qwen3_32b",
+      "display_name": "Qwen3-32B",
+      "hf_id": "Qwen/Qwen3-32B",
+      "family": "qwen3",
+      "size": "32B",
+      "hf_url": "https://huggingface.co/Qwen/Qwen3-32B",
+      "role": "optional scaling model"
+    },
+    {
+      "id": "llama3_1_8b_instruct",
+      "display_name": "Llama-3.1-8B-Instruct",
+      "hf_id": "meta-llama/Llama-3.1-8B-Instruct",
+      "family": "llama3.1",
+      "size": "8B",
+      "hf_url": "https://huggingface.co/meta-llama/Llama-3.1-8B-Instruct",
+      "role": "primary small model; gated repository"
+    },
+    {
+      "id": "mistral_7b_instruct_v0_3",
+      "display_name": "Mistral-7B-Instruct-v0.3",
+      "hf_id": "mistralai/Mistral-7B-Instruct-v0.3",
+      "family": "mistral",
+      "size": "7B",
+      "hf_url": "https://huggingface.co/mistralai/Mistral-7B-Instruct-v0.3",
+      "role": "primary small model"
+    }
+  ],
+  "methods": [
+    {
+      "id": "actmap_vit2d",
+      "display_name": "ActMap",
+      "group": "actmap",
+      "requires_training": true,
+      "uses_sampling": false,
+      "applicability": {
+        "datasets": "all",
+        "models": "all"
+      },
+      "description": "Generation-time hidden-state activation maps classified with a compact ViT2D."
+    }
+  ],
+  "metrics": [
+    {
+      "id": "auroc",
+      "display_name": "AUROC",
+      "higher_is_better": true
+    },
+    {
+      "id": "auprc",
+      "display_name": "AUPRC",
+      "higher_is_better": true,
+      "include_prevalence_baseline": true
+    },
+    {
+      "id": "ece_10_bin",
+      "display_name": "10-bin ECE",
+      "higher_is_better": false,
+      "bins": 10
+    }
+  ],
+  "project": "ActMap",
+  "factuality_model": {
+    "id": "lytang/MiniCheck-Flan-T5-Large",
+    "hf_url": "https://huggingface.co/lytang/MiniCheck-Flan-T5-Large",
+    "use": "CNN/DailyMail sentence-level factuality labels"
+  }
+}

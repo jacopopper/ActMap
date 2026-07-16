@@ -1,1 +1,97 @@
-legacy/*
+# Public repository keeps source code, replication metadata, and README files.
+# Generated research artifacts, private notes, paper sources, and local environments
+# remain on disk but are excluded by broad patterns.
+
+# Notes and rendered documents
+*.md
+!README.md
+*.pdf
+*.aux
+*.bbl
+*.blg
+*.log
+*.out
+*.toc
+*.synctex.gz
+*.fdb_latexmk
+*.fls
+
+# Generated data, checkpoints, caches, and reports
+**/artifacts/
+**/checkpoints/
+**/predictions/
+**/features/
+**/generations/
+**/balanced_indices/
+**/balanced_indices_*/
+**/reports/
+**/logs/
+**/results/
+**/factuality/
+**/tmp/
+*.parquet
+*.jsonl
+*.pt
+*.pth
+*.ckpt
+*.npz
+*.npy
+*.pkl
+*.pickle
+*.csv
+*.lock
+
+# Optional analysis and baseline-specific helpers are outside the ActMap path.
+src/aggregate_*.py
+src/analyze_*.py
+src/benchmark_*.py
+src/cluster_*.py
+src/generate_*ablation*.py
+src/localize_*.py
+src/prepare_*.py
+src/sample_*.py
+src/score_*_ablations.py
+src/score_*_transfer.py
+src/score_eigenscore_*.py
+src/official_act_*.py
+src/*attribution*.py
+**/*attribution*.py
+
+# Tests are useful during development but are outside the public replication path.
+**/tests/
+**/test_*.py
+
+# Local and archived material
+**/__pycache__/
+**/*.py[cod]
+**/*.orig
+**/*.rej
+**/*.egg-info/
+**/.cache/
+**/.venv/
+**/venv/
+**/legacy/
+**/paper/
+**/recent_*/
+**/third_party/
+**/configs/
+**/._*
+.env
+.env.*
+
+# Local experiment launchers are outside the public replication path.
+**/scripts/
+
+# ActMap-only submission source allowlist
+src/*.py
+!src/__init__.py
+!src/experiment_registry.py
+!src/data_split_labels.py
+!src/generate_actmaps.py
+!src/label_cnndm_minicheck.py
+!src/balanced_indices.py
+!src/build_cnndm_minicheck_balanced_indices.py
+!src/score_actmap_vit.py
+src/methods/*.py
+!src/methods/__init__.py
+!src/methods/actmap.py
