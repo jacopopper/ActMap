@@ -7,6 +7,23 @@ feature generation, balanced split construction, and ActMap detector training.
 Generated activations, model checkpoints, predictions, caches, logs, and paper
 artifacts are not part of the repository.
 
+## Released Dataset
+
+The full ActMap corpus is published as a Hugging Face dataset:
+[jacopopper/ActMap](https://huggingface.co/datasets/jacopopper/ActMap)
+(private until publication). It contains all 476,372 successful captures from
+the twelve 7--8B model-dataset configurations as `12 x 32 x 128` float16 maps
+with binary correctness labels; the 317,212 rows marked `paper_balanced`
+reproduce the paper's primary experiments. Training or evaluating a detector
+on the released maps requires no LLM and none of the generation stages below.
+
+```python
+from datasets import load_dataset
+
+dataset = load_dataset("jacopopper/ActMap", "qwen3-8b__triviaqa")
+paper_train = dataset["train"].filter(lambda row: row["paper_balanced"])
+```
+
 ## Replication Scope
 
 The primary paper results use three instruction-tuned models on four datasets:
