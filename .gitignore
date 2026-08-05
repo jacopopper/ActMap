@@ -62,6 +62,12 @@ src/*attribution*.py
 **/test_*.py
 
 # Local and archived material
+/paper/
+/server_snapshot/
+/doc/
+/.secrets/
+/opencode.json
+/-l.png
 **/__pycache__/
 **/*.py[cod]
 **/*.orig
@@ -83,6 +89,13 @@ src/*attribution*.py
 **/scripts/
 
 # ActMap-only submission source allowlist
+src/baselines/
+src/data/
+src/evaluation/
+src/experiments/
+src/generation/
+src/models/
+src/training/
 src/*.py
 !src/__init__.py
 !src/experiment_registry.py
