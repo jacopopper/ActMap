@@ -63,6 +63,7 @@ src/*attribution*.py
 
 # Local and archived material
 /paper/
+/arxiv/
 /server_snapshot/
 /doc/
 /.secrets/

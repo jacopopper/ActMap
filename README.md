@@ -1,82 +1,85 @@
 # ActMap
 
-This repository contains the reproducible implementation of **ActMap**, a
-single-pass uncertainty detector built from generation-time hidden-state
-activation maps. The public replication path is deliberately limited to ActMap
-feature generation, balanced split construction, and ActMap detector training.
-Generated activations, model checkpoints, predictions, caches, logs, and paper
-artifacts are not part of the repository.
+**Single-Pass Uncertainty Quantification from Generation-Time Activation Maps**
 
-## Released Dataset
+ActMap estimates whether an LLM-generated answer is correct using the model's
+hidden states captured during a single generation. It compresses the activation
+trajectory into a fixed-size map, then uses a compact classifier to predict
+answer correctness. Scoring a captured map requires no additional LLM calls.
 
-The full ActMap corpus is published as a Hugging Face dataset:
-[jacopopper/ActMap](https://huggingface.co/datasets/jacopopper/ActMap)
-(private until publication). It contains all 476,372 successful captures from
-the twelve 7--8B model-dataset configurations as `12 x 32 x 128` float16 maps
-with binary correctness labels; the 317,212 rows marked `paper_balanced`
-reproduce the paper's primary experiments. Training or evaluating a detector
-on the released maps requires no LLM and none of the generation stages below.
+> **Paper status:** Under review at AAAI.
 
-```python
-from datasets import load_dataset
+This repository provides the ActMap pipeline: activation capture, correctness
+labeling, balanced split construction, and detector training and evaluation.
 
-dataset = load_dataset("jacopopper/ActMap", "qwen3-8b__triviaqa")
-paper_train = dataset["train"].filter(lambda row: row["paper_balanced"])
-```
+## Method
 
-## Replication Scope
+1. **Capture.** Collect hidden states across transformer layers during decoding.
+2. **Compress.** Summarize the trajectory with 12 temporal-statistic channels,
+   including segment means, variability, and trends. Pool across depth and hidden
+   coordinates to produce a `12 × 32 × 128` tensor: 96 KiB in float16.
+3. **Score.** Train a compact Vision Transformer (ViT2D) on maps with binary
+   correctness labels to estimate the probability that an answer is correct.
 
-The primary paper results use three instruction-tuned models on four datasets:
+The detector reads activation maps without using answer text or token
+probabilities as classifier inputs. Its score can support abstention, routing,
+or selective verification.
 
-| Resource | Hugging Face link | Notes |
-|---|---|---|
-| Qwen3-8B | [Qwen/Qwen3-8B](https://huggingface.co/Qwen/Qwen3-8B) | Primary model |
-| Llama 3.1 8B Instruct | [meta-llama/Llama-3.1-8B-Instruct](https://huggingface.co/meta-llama/Llama-3.1-8B-Instruct) | Gated repository; access approval and `HF_TOKEN` are required |
-| Mistral 7B Instruct v0.3 | [mistralai/Mistral-7B-Instruct-v0.3](https://huggingface.co/mistralai/Mistral-7B-Instruct-v0.3) | Primary model |
-| Qwen3-32B | [Qwen/Qwen3-32B](https://huggingface.co/Qwen/Qwen3-32B) | Optional scaling experiment |
-| TriviaQA | [mandarjoshi/trivia_qa](https://huggingface.co/datasets/mandarjoshi/trivia_qa) | `rc.nocontext` configuration |
-| NQ-Open | [google-research-datasets/nq_open](https://huggingface.co/datasets/google-research-datasets/nq_open) | Open-domain QA |
-| GSM8K | [openai/gsm8k](https://huggingface.co/datasets/openai/gsm8k) | `main` configuration; direct numeric-answer mode |
-| CNN/DailyMail | [abisee/cnn_dailymail](https://huggingface.co/datasets/abisee/cnn_dailymail) | `3.0.0` configuration |
-| MiniCheck | [lytang/MiniCheck-Flan-T5-Large](https://huggingface.co/lytang/MiniCheck-Flan-T5-Large) | CNN/DailyMail factuality labels |
+The primary evaluation is **supervised and in-domain**, with a separate detector
+for each model–dataset pair. Scores learned on balanced splits may need
+recalibration when the correctness base rate changes; a shared map shape does
+not imply transfer across models or tasks.
 
-The exact identifiers, configurations, source limits, split seed, and model
-URLs are recorded in [`replication/actmap_registry.json`](replication/actmap_registry.json).
+## Experimental scope
 
-## Setup
+The primary experiments cover three instruction-tuned models and four datasets,
+for twelve model–dataset configurations.
 
-Use Python 3.12 and a CUDA environment compatible with the installed PyTorch
-and vLLM versions. The Llama repository requires an approved Hugging Face
-account and token.
+| Model | Role |
+| --- | --- |
+| [Qwen3-8B](https://huggingface.co/Qwen/Qwen3-8B) | Primary experiments |
+| [Llama 3.1 8B Instruct](https://huggingface.co/meta-llama/Llama-3.1-8B-Instruct) | Primary experiments; gated model access required |
+| [Mistral 7B Instruct v0.3](https://huggingface.co/mistralai/Mistral-7B-Instruct-v0.3) | Primary experiments |
+| [Qwen3-32B](https://huggingface.co/Qwen/Qwen3-32B) | Optional scaling experiment |
+
+| Dataset | Task | Configuration |
+| --- | --- | --- |
+| [TriviaQA](https://huggingface.co/datasets/mandarjoshi/trivia_qa) | Short-answer question answering | `rc.nocontext` |
+| [NQ-Open](https://huggingface.co/datasets/google-research-datasets/nq_open) | Open-domain question answering | Default |
+| [GSM8K](https://huggingface.co/datasets/openai/gsm8k) | Direct-answer mathematics | `main`; final numeric answer only |
+| [CNN/DailyMail](https://huggingface.co/datasets/abisee/cnn_dailymail) | Summarization factuality | `3.0.0`; labels from [MiniCheck](https://huggingface.co/lytang/MiniCheck-Flan-T5-Large) |
+
+The [experiment registry](replication/actmap_registry.json) records model and
+dataset identifiers, source limits, label definitions, and split settings.
+The runner retains the internal ID `gsm8k_rationale` for compatibility but uses
+**direct-answer mode** for the primary GSM8K experiments.
+
+## Installation
+
+Use Python 3.12, [uv](https://docs.astral.sh/uv/), and a CUDA environment compatible
+with PyTorch and vLLM. Run these commands from the repository root:
 
 ```bash
-python3 -m venv .venv
+uv sync --python 3.12
 source .venv/bin/activate
-python3 -m pip install -e .
-hf auth login
 ```
 
-For a separate data disk, set the artifact and Hugging Face cache locations
-before running:
+For Llama, first obtain access to the model on Hugging Face, then authenticate
+with `hf auth login` or set `HF_TOKEN` in your environment.
 
-```bash
-export ACTMAP_ARTIFACT_ROOT=/data_disk/$USER/ActMap/artifacts
-export HF_HOME=/data_disk/$USER/hf_cache
-export HF_DATASETS_CACHE=$HF_HOME/datasets
-export TRANSFORMERS_CACHE=$HF_HOME/transformers
-```
-
-## Reproduce ActMap
-
-First verify the installation and command wiring. This smoke test does not
-use a GPU or download model weights or datasets.
+Verify the registry and command wiring without downloading datasets or model
+weights, or using a GPU:
 
 ```bash
 bash replication/run_actmap.sh smoke
 ```
 
-The full runner uses one visible GPU by default and is restartable because
-every stage writes checkpoints and row-level artifacts.
+## Reproduction
+
+The runner defaults to the three primary models, all four datasets, one visible
+GPU (`GPU_ID=0`), and detector seeds `42`, `123`, and `456`.
+
+Run the stages in order:
 
 ```bash
 bash replication/run_actmap.sh prepare
@@ -86,12 +89,16 @@ bash replication/run_actmap.sh balance
 bash replication/run_actmap.sh train
 ```
 
-`generate` uses greedy decoding with thinking disabled, 32 new tokens for QA
-and direct GSM8K, and 384 new tokens for CNN/DailyMail. The default detector
-uses the paper configuration: a `12 x 32 x 128` ActMap, compact ViT2D, three
-seeds (`42 123 456`), balanced train/validation/test splits, and 10-bin ECE.
+| Stage | Purpose |
+| --- | --- |
+| `prepare` | Download source datasets and build deterministic, source-disjoint splits. |
+| `generate` | Generate answers and capture normalized ActMaps. |
+| `label-cnndm` | Label CNN/DailyMail summaries with MiniCheck; skipped when this dataset is not selected. |
+| `balance` | Build train, validation, and test indexes with equal numbers of correct and incorrect examples. |
+| `train` | Train the detector and report AUROC, AUPRC, and 10-bin expected calibration error (ECE). |
 
-To run only a subset, override the space-separated variables:
+Use `bash replication/run_actmap.sh all` to run the complete sequence. For a
+smaller experiment, select a subset with space-separated environment variables:
 
 ```bash
 DATASETS="triviaqa_no_context nq_open" \
@@ -100,18 +107,57 @@ GPU_ID=0 \
 bash replication/run_actmap.sh all
 ```
 
-For CNN/DailyMail, `label-cnndm` runs MiniCheck before `balance`. It can be
-sharded across GPUs by setting `MINICHECK_SHARD_INDEX` and
-`MINICHECK_NUM_SHARDS`, then merging once after all shards finish.
+Generation uses greedy decoding with Qwen thinking disabled, up to 32 new tokens
+for question answering and direct-answer GSM8K, and up to 384 for CNN/DailyMail.
+The default detector is a ViT2D with six transformer blocks, embedding width
+192, and `4 × 16` patches, trained for up to 80 epochs with early stopping on
+validation AUROC.
 
-## Outputs
+### Artifact storage
 
-The runner writes only under `ACTMAP_ARTIFACT_ROOT`:
+By default, outputs and Hugging Face caches are stored under `artifacts/`.
+To use a separate data disk, set these paths before running:
 
-- source records and deterministic source-disjoint splits;
-- generation JSONL and normalized `12 x 32 x 128` ActMaps;
-- balanced correctness indexes;
-- per-seed ActMap checkpoints and predictions;
-- AUROC, AUPRC, and 10-bin ECE reports.
+```bash
+export ACTMAP_ARTIFACT_ROOT=/path/to/actmap/artifacts
+export HF_HOME=/path/to/huggingface/cache
+```
 
-No repository commit or push is performed by the replication commands.
+Outputs include source records and splits, generation JSONL, activation tensors,
+balanced indexes, detector checkpoints, per-seed predictions, and metric reports.
+Generated artifacts and local paper sources are excluded from version control.
+
+## Activation dataset
+
+The [ActMap corpus on Hugging Face](https://huggingface.co/datasets/jacopopper/ActMap)
+is **private until publication**. Access is required for the example below.
+
+The corpus contains 476,372 successful captures from the twelve primary
+model–dataset configurations, stored as `12 × 32 × 128` float16 maps with binary
+correctness labels. The 317,212 rows marked `paper_balanced` identify the subset
+used in the primary experiments.
+
+```python
+from datasets import load_dataset
+
+dataset = load_dataset("jacopopper/ActMap", "qwen3-8b__triviaqa", token=True)
+paper_train = dataset["train"].filter(lambda row: row["paper_balanced"])
+```
+
+Precomputed maps support detector experiments without rerunning LLM generation.
+The replication runner above builds its own local artifacts from the source
+datasets and does not require access to this private corpus.
+
+## Code overview
+
+| Path | Purpose |
+| --- | --- |
+| [`replication/run_actmap.sh`](replication/run_actmap.sh) | Entry point for the replication stages |
+| [`replication/actmap_registry.json`](replication/actmap_registry.json) | Experiment configuration and resource identifiers |
+| [`src/generate_actmaps.py`](src/generate_actmaps.py) | Generation, hidden-state capture, and map construction |
+| [`src/data_split_labels.py`](src/data_split_labels.py) | Source splits and correctness labels |
+| [`src/label_cnndm_minicheck.py`](src/label_cnndm_minicheck.py) | MiniCheck factuality labeling for summaries |
+| [`src/balanced_indices.py`](src/balanced_indices.py) | Balanced indexes for question answering and mathematics |
+| [`src/build_cnndm_minicheck_balanced_indices.py`](src/build_cnndm_minicheck_balanced_indices.py) | Balanced indexes for summarization |
+| [`src/methods/actmap.py`](src/methods/actmap.py) | Detector architectures and training utilities |
+| [`src/score_actmap_vit.py`](src/score_actmap_vit.py) | Detector training and evaluation entry point |

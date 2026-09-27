@@ -81,8 +81,8 @@
     },
     {
       "id": "gsm8k_rationale",
-      "display_name": "GSM8K rationale",
-      "task_type": "math_rationale",
+      "display_name": "GSM8K direct",
+      "task_type": "math_direct_answer",
       "context": "word_problem",
       "label_target": "final_numeric_answer_correctness",
       "split_strategy": "question_disjoint_train_validation_test",
