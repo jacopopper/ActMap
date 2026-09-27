@@ -7,8 +7,6 @@ hidden states captured during a single generation. It compresses the activation
 trajectory into a fixed-size map, then uses a compact classifier to predict
 answer correctness. Scoring a captured map requires no additional LLM calls.
 
-> **Paper status:** Under review at AAAI.
-
 This repository provides the ActMap pipeline: activation capture, correctness
 labeling, balanced split construction, and detector training and evaluation.
 
